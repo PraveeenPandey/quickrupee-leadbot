@@ -320,13 +320,12 @@
 
     <script>
         let ws = null;
-        let mediaRecorder = null;
         let audioContext = null;
         let sessionId = null;
-        let audioQueue = [];
-        let isPlayingAudio = false;
-        let micMuted = true;  // Start muted, server will unmute when ready for user input
-        let pendingUnmute = false;  // Unmute after audio playback completes
+        let mp3Queue = [];
+        let isPlayingMP3 = false;
+        let micMuted = true;
+        let pendingUnmute = false;
 
         function addMessage(text, type) {
             const conversationArea = document.getElementById('conversationArea');
@@ -449,9 +448,7 @@
 
             stopRecording();
 
-            // Clear audio queues and reset mic state
-            audioQueue = [];
-            isPlayingAudio = false;
+            // Clear audio queue and reset mic state
             mp3Queue = [];
             isPlayingMP3 = false;
             micMuted = true;
@@ -481,11 +478,6 @@
 
                 case 'state_update':
                     updateState(message.state);
-                    break;
-
-                case 'audio':
-                    // Play audio (OpenAI Realtime PCM16 response) - legacy
-                    playAudioPCM(message.data);
                     break;
 
                 case 'audio_mp3':
@@ -521,7 +513,7 @@
 
                 case 'unmute_mic':
                     // Don't unmute immediately - wait for audio playback to finish
-                    if (isPlayingAudio || audioQueue.length > 0 || isPlayingMP3 || mp3Queue.length > 0) {
+                    if (isPlayingMP3 || mp3Queue.length > 0) {
                         pendingUnmute = true;
                         console.log('🕐 Pending unmute (waiting for audio playback)');
                     } else {
@@ -532,9 +524,6 @@
                     break;
             }
         }
-
-        let mp3Queue = [];
-        let isPlayingMP3 = false;
 
         async function playAudioMP3(base64Audio) {
             // Add MP3 to queue
@@ -582,78 +571,6 @@
             } catch (error) {
                 console.error('Error playing MP3:', error);
                 playNextMP3();
-            }
-        }
-
-        async function playAudioPCM(base64Audio) {
-            // Add to queue instead of playing immediately (legacy PCM support)
-            audioQueue.push(base64Audio);
-
-            // Start playing if not already playing
-            if (!isPlayingAudio) {
-                playNextInQueue();
-            }
-        }
-
-        async function playNextInQueue() {
-            if (audioQueue.length === 0) {
-                isPlayingAudio = false;
-                // Check if we should unmute now that audio is done
-                if (pendingUnmute) {
-                    pendingUnmute = false;
-                    micMuted = false;
-                    console.log('🎤 Microphone unmuted (audio playback complete)');
-                    document.getElementById('recordingIndicator').querySelector('span').textContent = 'Listening...';
-                }
-                return;
-            }
-
-            isPlayingAudio = true;
-            const base64Audio = audioQueue.shift();
-
-            try {
-                // Create audio context if needed
-                if (!audioContext) {
-                    audioContext = new AudioContext({ sampleRate: 24000 });
-                }
-
-                // Decode base64 to PCM16 data
-                const binaryString = atob(base64Audio);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-
-                // Convert PCM16 (Int16) to Float32 for Web Audio API
-                const pcm16 = new Int16Array(bytes.buffer);
-                const float32 = new Float32Array(pcm16.length);
-
-                for (let i = 0; i < pcm16.length; i++) {
-                    // Convert 16-bit integer to float32 (-1.0 to 1.0)
-                    float32[i] = pcm16[i] / 32768.0;
-                }
-
-                // Create audio buffer manually for raw PCM data
-                const audioBuffer = audioContext.createBuffer(1, float32.length, 24000);
-                audioBuffer.getChannelData(0).set(float32);
-
-                // Play the audio
-                const source = audioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(audioContext.destination);
-
-                // When this chunk finishes, play the next one
-                source.onended = () => {
-                    console.log('Audio chunk finished');
-                    playNextInQueue();
-                };
-
-                source.start(0);
-                console.log('▶️ Playing audio chunk:', float32.length, 'samples', '| Queue size:', audioQueue.length);
-            } catch (error) {
-                console.error('Error playing audio:', error);
-                // Continue to next chunk even if this one fails
-                playNextInQueue();
             }
         }
 

@@ -10,7 +10,6 @@ import httpx
 from contextlib import asynccontextmanager
 from typing import Dict, Optional
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 import uvicorn
 
@@ -256,14 +255,6 @@ async def demo_voice_stream(websocket: WebSocket, session_id: str):
                     "is_eligible": result.get('is_eligible')
                 })
 
-        async def on_audio(audio_bytes: bytes):
-            """Handle audio response from OpenAI"""
-            # Send audio to browser for playback (uses module-level base64 import)
-            await websocket.send_json({
-                "type": "audio",
-                "data": base64.b64encode(audio_bytes).decode('utf-8')
-            })
-
         async def on_error(error: str):
             """Handle OpenAI errors"""
             logger.error(f"OpenAI error: {error}")
@@ -272,10 +263,9 @@ async def demo_voice_stream(websocket: WebSocket, session_id: str):
                 "message": error
             })
 
-        # Connect to OpenAI Realtime API
+        # Connect to OpenAI Realtime API (STT only)
         openai_client = OpenAIRealtimeClient(
             on_transcript=on_transcript,
-            on_audio=on_audio,
             on_error=on_error,
         )
         await openai_client.connect()
