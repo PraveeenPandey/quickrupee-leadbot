@@ -4,7 +4,7 @@ An AI-powered voice bot that screens loan applicants through automated conversat
 
 ---
 
-## 🚀 Quick Start (3 Steps)
+## Quick Start (3 Steps)
 
 ### 1. Install Dependencies
 
@@ -32,7 +32,7 @@ Open `http://localhost:8000` in Chrome or Edge browser.
 
 ---
 
-## 🎯 What It Does
+## What It Does
 
 Screens loan applicants with 3 questions:
 
@@ -40,12 +40,12 @@ Screens loan applicants with 3 questions:
 2. **"Is your monthly salary above ₹25,000?"**
 3. **"Do you live in Delhi, Mumbai, or Bangalore?"**
 
-**All Yes** → ✅ Eligible (agent will call back)
-**Any No** → ❌ Not eligible (call ends)
+**All Yes** → Eligible (agent will call back)
+**Any No** → Not eligible (call ends)
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Browser Microphone
@@ -60,14 +60,14 @@ State Machine
 ```
 
 **Key Decision:** Rule-based state machine for eligibility checks (not LLM) because:
-- ⚡ **Faster** - Instant vs 1-3 seconds
-- 🎯 **Deterministic** - No AI hallucinations
-- 📋 **Auditable** - Regulatory compliance
-- 💰 **Cheaper** - No extra API calls
+- **Faster** - Instant vs 1-3 seconds
+- **Deterministic** - No AI hallucinations
+- **Auditable** - Regulatory compliance
+- **Cheaper** - No extra API calls
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 quickrupee-voicebot/
@@ -82,7 +82,7 @@ quickrupee-voicebot/
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Test business logic
@@ -97,7 +97,7 @@ python test_state_machine.py
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
@@ -109,17 +109,17 @@ python test_state_machine.py
 
 ---
 
-## 📊 Features
+## Features
 
-✅ **Ultra-low latency** - OpenAI Realtime API with token-level streaming
-✅ **Rule-based logic** - Fast, explainable eligibility decisions
-✅ **State machine** - Deterministic conversation flow
-✅ **Browser-based** - No phone number or cloud setup needed
-✅ **Production-ready patterns** - Easy to add telephony later
+**Ultra-low latency** - OpenAI Realtime API with token-level streaming
+**Rule-based logic** - Fast, explainable eligibility decisions
+**State machine** - Deterministic conversation flow
+**Browser-based** - No phone number or cloud setup needed
+**Production-ready patterns** - Easy to add telephony later
 
 ---
 
-## 🎓 Interview Talking Points
+## Interview Talking Points
 
 ### Why State Machine Instead of LLM?
 
@@ -156,7 +156,7 @@ python test_state_machine.py
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **Module not found**
 ```bash
@@ -180,7 +180,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📈 Next Steps
+## Next Steps
 
 ### For Production Deployment:
 - Integrate Twilio for phone calls
@@ -196,7 +196,7 @@ pip install -r requirements.txt
 
 ---
 
-## 💰 Cost Estimate (Production Scale)
+## Cost Estimate (Production Scale)
 
 For 1,000 minutes of calls:
 - OpenAI Realtime API: ~$3-5
@@ -206,7 +206,7 @@ For 1,000 minutes of calls:
 
 ---
 
-## ✅ Pre-Interview Checklist
+## Pre-Interview Checklist
 
 - [ ] Run `python demo_server.py` successfully
 - [ ] Test eligible flow (all "Yes")
@@ -218,7 +218,7 @@ For 1,000 minutes of calls:
 
 ---
 
-## 📄 License
+## License
 
 MIT License - Free to use for interview projects and learning
 
