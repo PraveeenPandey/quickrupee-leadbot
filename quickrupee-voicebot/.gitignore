@@ -67,3 +67,9 @@ tmp/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+ARCHITECTURE.md
+FIXES_APPLIED.md
+HOW_TO_USE.md
+PROJECT_SUMMARY.md
+START_HERE.md
